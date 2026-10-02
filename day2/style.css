@@ -1,0 +1,209 @@
+/* ============================================
+   QuickNotes — style.css
+   ============================================ */
+
+/* Reset: apply border-box to every element */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* ---------- Base / body ---------- */
+body {
+  margin: 0;
+  font-family: "Segoe UI", Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  color: #222;
+  background-color: #f4f6f8;
+}
+
+/* ---------- Header ---------- */
+header {
+  background-color: #0ba184;
+  color: #ffffff;
+  padding: 32px 16px 24px;
+  text-align: center;
+}
+
+header h1 {
+  margin: 0 0 4px;
+  font-size: 32px;
+}
+
+header p {
+  margin: 0 0 16px;
+  opacity: 0.9;
+}
+
+/* ---------- Navigation (Flexbox row, centred) ---------- */
+nav {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+}
+
+nav a {
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: 600;
+  transition: opacity 0.2s ease;
+}
+
+nav a:hover {
+  opacity: 0.75;
+  text-decoration: underline;
+}
+
+/* ---------- Main content (centred, max-width) ---------- */
+main {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+
+/* Card look for each section */
+section {
+  background-color: #ffffff;
+  padding: 20px 24px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+section h2,
+section h3 {
+  margin-top: 0;
+}
+
+/* ---------- Features grid ---------- */
+.features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.features li {
+  background-color: #f0faf7;
+  border: 1px solid #cdece5;
+  border-radius: 8px;
+  padding: 14px;
+}
+
+/* ---------- Shortcuts table ---------- */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  border: 1px solid #ddd;
+  padding: 10px 12px;
+  text-align: left;
+}
+
+th {
+  background-color: #f0faf7;
+}
+
+/* ---------- Inputs and textareas ---------- */
+input,
+textarea {
+  font: inherit;
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+input:focus,
+textarea:focus {
+  outline: 2px solid #0ba184;
+  outline-offset: 1px;
+  border-color: #0ba184;
+}
+
+/* Feedback form: stacked vertically, full width */
+#feedback-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+#feedback-form label {
+  font-weight: 600;
+}
+
+#feedback-form input,
+#feedback-form textarea {
+  width: 100%;
+}
+
+/* Note form: input + button side by side on wide screens */
+#note-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+#note-form label {
+  width: 100%;
+  font-weight: 600;
+}
+
+#note-input {
+  flex: 1;
+  min-width: 0;
+}
+
+/* ---------- Buttons ---------- */
+button {
+  font: inherit;
+  background-color: #0ba184;
+  color: #ffffff;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+button:hover {
+  background-color: #088a70;
+  transform: translateY(-2px);
+}
+
+/* ---------- Footer ---------- */
+footer {
+  text-align: center;
+  padding: 24px 16px;
+  color: #666;
+  font-size: 14px;
+}
+
+/* ---------- Responsive: phones ---------- */
+@media (max-width: 600px) {
+  header {
+    padding: 20px 12px 16px;
+  }
+
+  header h1 {
+    font-size: 24px;
+  }
+
+  main {
+    padding: 16px 12px;
+  }
+
+  section {
+    padding: 16px;
+  }
+
+  #note-form {
+    flex-direction: column;
+  }
+}
