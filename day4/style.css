@@ -1,0 +1,187 @@
+/* ============================================
+   QuickNotes — Day 4: Note Editor
+   ============================================ */
+
+/* ---------- Theme variables (light is the default) ---------- */
+:root {
+  --bg: #f4f6f8;
+  --surface: #ffffff;
+  --text: #222222;
+  --muted: #666666;
+  --primary: #0ba184;
+  --primary-hover: #088a70;
+  --border: #cccccc;
+  --warning: #e67e22;
+  --over: #c0392b;
+  --shadow: rgba(0, 0, 0, 0.08);
+}
+
+/* Dark theme: only the variables change — every rule below follows */
+body.dark {
+  --bg: #12161a;
+  --surface: #1c2229;
+  --text: #e8eaed;
+  --muted: #9aa3ad;
+  --primary: #16c79a;
+  --primary-hover: #12a883;
+  --border: #33404a;
+  --warning: #f5a623;
+  --over: #ff6b5e;
+  --shadow: rgba(0, 0, 0, 0.45);
+}
+
+/* ---------- Reset / base ---------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--text);
+  background-color: var(--bg);
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+/* ---------- Header ---------- */
+header {
+  background-color: var(--primary);
+  color: #ffffff;
+  padding: 32px 16px 24px;
+  text-align: center;
+}
+
+header h1 {
+  margin: 0 0 4px;
+  font-size: 32px;
+}
+
+header p {
+  margin: 0;
+  opacity: 0.9;
+}
+
+/* ---------- Main card ---------- */
+main {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+
+section {
+  background-color: var(--surface);
+  padding: 24px;
+  border-radius: 10px;
+  box-shadow: 0 1px 3px var(--shadow);
+  transition: background-color 0.25s ease;
+}
+
+label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+/* ---------- Textarea ---------- */
+textarea {
+  width: 100%;
+  font: inherit;
+  padding: 12px;
+  color: var(--text);
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  resize: vertical;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+textarea:focus {
+  outline: 2px solid var(--primary);
+  outline-offset: 1px;
+  border-color: var(--primary);
+}
+
+/* ---------- Counters ----------
+   NOTE: `main p` (0,0,2) is deliberately weaker than the .warning and
+   .over classes (0,1,0) below, so the state colours win the cascade. */
+main p {
+  margin: 8px 0 0;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+/* Character-counter states (from the assignment brief) */
+.warning {
+  color: var(--warning);
+}
+
+.over {
+  color: var(--over);
+  font-weight: bold;
+}
+
+/* ---------- Buttons ---------- */
+.buttons {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+button {
+  font: inherit;
+  background-color: var(--primary);
+  color: #ffffff;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+button:hover {
+  background-color: var(--primary-hover);
+  transform: translateY(-2px);
+}
+
+#clear-btn {
+  background-color: #8e0000;
+}
+
+#clear-btn:hover {
+  background-color: #6b0000;
+}
+
+/* ---------- Footer ---------- */
+footer {
+  text-align: center;
+  padding: 24px 16px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 600px) {
+  header {
+    padding: 20px 12px 16px;
+  }
+
+  header h1 {
+    font-size: 24px;
+  }
+
+  main {
+    padding: 16px 12px;
+  }
+
+  section {
+    padding: 16px;
+  }
+
+  .buttons {
+    flex-direction: column;
+  }
+}
