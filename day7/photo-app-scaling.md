@@ -1,3 +1,4 @@
+markdown
 # SnapShare — Scaling Plan
 
 A scaling plan for **SnapShare**, a photo-sharing app where users upload photos and scroll a feed of photos from people they follow.
@@ -22,42 +23,38 @@ My own estimates, added:
 - No deletions and no compression for this estimate — we are sizing the "worst case" growth.
 
 **Daily active users (DAU):**
-
-```
 10,000,000 × 10% = 1,000,000 DAU
-```
+
+text
 
 ---
 
 ## 2. Estimates
 
 ### Uploads per second
+1,000,000 users × 1 photo = 1,000,000 uploads per day
+1,000,000 ÷ 100,000 ≈ 10 uploads per second (average)
+10 × 5 ≈ 50 uploads per second (peak)
 
-```
-1,000,000 users × 1 photo   = 1,000,000 uploads per day
-1,000,000 ÷ 100,000         ≈ 10 uploads per second (average)
-10 × 5                      ≈ 50 uploads per second (peak)
-```
+text
 
 ### Feed views per second
+1,000,000 users × 50 views = 50,000,000 feed views per day
+50,000,000 ÷ 100,000 ≈ 500 feed views per second (average)
+500 × 5 ≈ 2,500 feed views per second (peak)
 
-```
-1,000,000 users × 50 views  = 50,000,000 feed views per day
-50,000,000 ÷ 100,000        ≈ 500 feed views per second (average)
-500 × 5                     ≈ 2,500 feed views per second (peak)
-```
+text
 
 ### Photo storage per year
+Original photos: 1,000,000 photos/day × 2 MB = 2,000,000 MB/day = 2 TB/day
+2 TB × 365 days ≈ 730 TB per year
 
-```
-Original photos:  1,000,000 photos/day × 2 MB      = 2,000,000 MB/day = 2 TB/day
-                  2 TB × 365 days                  ≈ 730 TB per year
+Thumbnails: 1,000,000 photos/day × 50 KB = 50,000,000 KB/day = 50 GB/day
+50 GB × 365 days ≈ 18.25 TB per year
 
-Thumbnails:       1,000,000 photos/day × 50 KB     = 50,000,000 KB/day = 50 GB/day
-                  50 GB × 365 days                 ≈ 18.25 TB per year
+Total: 730 TB + ~18 TB ≈ 750 TB per year
 
-Total:            730 TB + ~18 TB                  ≈ 750 TB per year
-```
+text
 
 That is roughly **three-quarters of a petabyte every year** — before any backups or replicas.
 
@@ -95,56 +92,45 @@ Reasons:
 ---
 
 ## 5. Architecture diagram
+┌─────────┐
+┌─────────>│ DNS │ (snapshare.com → IPs)
+│ └─────────┘
+│
+┌────────────┴──────────────┐
+│ Browser / mobile client │
+└────────────┬──────────────┘
+│
+┌────────────┴──────────────┐ static files
+│ Static files (JS, CSS) │ ──────> ┌───────────────────┐
+└────────────┬──────────────┘ │ CDN + object │
+│ │ storage │
+│ API calls (JSON) │ (photos + │
+│ │ thumbnails) │
+v └───────────────────┘
+┌──────────────────┐
+│ Load balancer │
+└────────┬─────────┘
+┌──────────┼──────────┐
+v v v
+┌────────┐ ┌────────┐ ┌────────┐ ┌───────────────┐
+│ App 1 │ │ App 2 │ │ App 3 │ ─────> │ Cache (Redis)│
+└───┬────┘ └───┬────┘ └───┬────┘ │ feed + photo │
+│ │ │ │ metadata │
+│ writes │ reads │ jobs └───────────────┘
+v v v
+┌─────────┐ ┌────────────┐ ┌─────────┐ ┌──────────┐
+│ Primary │>│ Read │ │ Queue │──>│ Worker │
+│ DB │ │ replicas │ │ (jobs) │ │ (makes │
+│(metadata│ │(feed reads)│ └─────────┘ │ thumbnails│
+│ only) │ └────────────┘ └────┬─────┘
+└─────────┘ │ writes
+v
+┌───────────────┐
+│ Object storage│
+│ (photo files) │
+└───────────────┘
 
-```
-                               ┌─────────┐
-                    ┌─────────>│   DNS   │  (snapshare.com → IPs)
-                    │          └─────────┘
-                    │
-       ┌────────────┴──────────────┐
-       │  Browser / mobile client  │
-       └────────────┬──────────────┘
-                    │
-       ┌────────────┴──────────────┐        static files
-       │   Static files (JS, CSS)  │ ──────> ┌───────────────────┐
-       └────────────┬──────────────┘         │   CDN + object    │
-                    │                        │   storage         │
-                    │  API calls (JSON)      │   (photos +       │
-                    │                        │    thumbnails)    │
-                    v                        └───────────────────┘
-          ┌──────────────────┐
-          │  Load balancer   │
-          └────────┬─────────┘
-        ┌──────────┼──────────┐
-        v          v          v
-   ┌────────┐ ┌────────┐ ┌────────┐        ┌───────────────┐
-   │ App 1  │ │ App 2  │ │ App 3  │ ─────> │  Cache (Redis)│
-   └───┬────┘ └───┬────┘ └───┬────┘        │  feed + photo │
-       │          │          │             │  metadata     │
-       │ writes   │ reads    │ jobs        └───────────────┘
-       v          v          v
-  ┌─────────┐ ┌────────────┐ ┌─────────┐   ┌──────────┐
-  │ Primary │>│ Read       │ │ Queue   │──>│ Worker   │
-  │   DB    │ │ replicas   │ │ (jobs)  │   │ (makes   │
-  │(metadata│ │(feed reads)│ └─────────┘   │ thumbnails│
-  │ only)   │ └────────────┘               └────┬─────┘
-  └─────────┘                                    │ writes
-                                                 v
-                                          ┌───────────────┐
-                                          │ Object storage│
-                                          │ (photo files) │
-                                          └───────────────┘
-```
-
-Read it as a request travelling top to bottom:
-
-1. The client asks DNS for the IP of `snapshare.com`.
-2. Static files (JavaScript, CSS, HTML) come from the CDN.
-3. Photo bytes come from the CDN, which pulls them from object storage on the first miss.
-4. API calls (JSON) go to the load balancer, which spreads them across the app servers.
-5. App servers read from Redis; on a miss they read from a **read replica**.
-6. On upload, the app server writes only to the **primary database** (metadata) and pushes the photo file to **object storage** — then adds a "make thumbnail" job to the queue.
-7. A **worker** picks up the job, creates the thumbnail, writes it to object storage, and updates the photo row.
+text
 
 ---
 
@@ -190,6 +176,3 @@ Every read replica, backup and extra region costs money — and object storage b
 
 **3. Simplicity vs scalability (monolith first).**
 The plan above is still a single deployable monolith running behind a load balancer — three app servers running the *same* code. Splitting into microservices (a feed service, an upload service, a thumbnail service) would let large teams deploy independently and scale each part separately, but it would multiply the operational complexity. At 50 uploads/s and 2,500 feed views/s, a well-organised monolith scales comfortably. The right decision is to start simple and only split when a clear reason appears.
-
-**4. Direct-to-storage uploads (extra step for the client, saved bandwidth for the server).**
-By having the client upload straight to object storage instead of through the app server, we save an enormous amount of server bandwidth — but we add a step to the client flow and have to carefully secure the pre-signed URL (short expiry, one-time use). A naive design that sent bytes through the API servers would be much simpler to build but would collapse under peak upload traffic.
