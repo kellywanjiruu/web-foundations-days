@@ -1,4 +1,3 @@
-markdown
 # SnapShare — Scaling Plan
 
 A scaling plan for **SnapShare**, a photo-sharing app where users upload photos and scroll a feed of photos from people they follow.
@@ -23,9 +22,8 @@ My own estimates, added:
 - No deletions and no compression for this estimate — we are sizing the "worst case" growth.
 
 **Daily active users (DAU):**
-10,000,000 × 10% = 1,000,000 DAU
 
-text
+10,000,000 × 10% = 1,000,000 DAU
 
 ---
 
@@ -36,14 +34,11 @@ text
 1,000,000 ÷ 100,000 ≈ 10 uploads per second (average)
 10 × 5 ≈ 50 uploads per second (peak)
 
-text
-
 ### Feed views per second
+
 1,000,000 users × 50 views = 50,000,000 feed views per day
 50,000,000 ÷ 100,000 ≈ 500 feed views per second (average)
 500 × 5 ≈ 2,500 feed views per second (peak)
-
-text
 
 ### Photo storage per year
 Original photos: 1,000,000 photos/day × 2 MB = 2,000,000 MB/day = 2 TB/day
@@ -53,8 +48,6 @@ Thumbnails: 1,000,000 photos/day × 50 KB = 50,000,000 KB/day = 50 GB/day
 50 GB × 365 days ≈ 18.25 TB per year
 
 Total: 730 TB + ~18 TB ≈ 750 TB per year
-
-text
 
 That is roughly **three-quarters of a petabyte every year** — before any backups or replicas.
 
@@ -92,6 +85,7 @@ Reasons:
 ---
 
 ## 5. Architecture diagram
+
 ┌─────────┐
 ┌─────────>│ DNS │ (snapshare.com → IPs)
 │ └─────────┘
@@ -129,8 +123,6 @@ v
 │ Object storage│
 │ (photo files) │
 └───────────────┘
-
-text
 
 ---
 
